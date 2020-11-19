@@ -1,0 +1,7 @@
+main: de.plugin.extra.Main
+name: MyPlugin
+version: 1.0
+author: me
+description: An Example plugin
+api-version: 1.13
+commands:
