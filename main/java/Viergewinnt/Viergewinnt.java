@@ -19,13 +19,13 @@ public class Viergewinnt {
     public ItemStack[] content;
     public ArrayList<Player> hasMove;
 
-    public Viergewinnt(int inventorySize, String gui_name, ItemStack[] content, Player player1, Player player2,ArrayList<Player> hasMove) {
+    public Viergewinnt(int inventorySize, String gui_name, ItemStack[] content, Player player1, Player player2, ArrayList<Player> hasMove) {
         this.inventorySize = inventorySize;
         this.gui_name = gui_name;
         this.content = content;
         this.player1 = player1;
         this.player2 = player2;
-        this.hasMove=hasMove;
+        this.hasMove = hasMove;
     }
 
     public void openGUI(Player player1, Player player2, Inventory inv) {
@@ -33,12 +33,14 @@ public class Viergewinnt {
         player2.openInventory(inv);
 
     }
-    public ArrayList<Player> switchPlayerWhoHasMove(ArrayList<Player> hasMove,Player clickedplayer,Player playerwithoutMove){
+
+    public ArrayList<Player> switchPlayerWhoHasMove(ArrayList<Player> hasMove, Player clickedplayer, Player playerwithoutMove) {
         hasMove.remove(clickedplayer);
         hasMove.add(playerwithoutMove);
         return hasMove;
     }
-    public ArrayList<Player> initializeHasMove(ArrayList<Player> hasMove,Player player1){
+
+    public ArrayList<Player> initializeHasMove(ArrayList<Player> hasMove, Player player1) {
         player1.sendMessage("bin in initialize");
         hasMove.add(player1);
 
@@ -166,28 +168,30 @@ public class Viergewinnt {
                 winner = checkforWinner(content[x], player1, player2);
             }
 
-        }  return winner;
+        }
+        return winner;
     }
-    public ItemStack[] setPlayersPoint(ItemStack[] content,Player player,int Slot){
-       int Slotspalte=Slot%9;
-       while(content[Slotspalte].equals(new ItemStack(Material.WHITE_STAINED_GLASS_PANE))){
-        Slotspalte=Slotspalte+9;
-            if(Slotspalte>54){
+
+    public ItemStack[] setPlayersPoint(ItemStack[] content, Player player, int Slot) {
+        int Slotspalte = Slot % 9;
+        while (content[Slotspalte].equals(new ItemStack(Material.WHITE_STAINED_GLASS_PANE))) {
+            Slotspalte = Slotspalte + 9;
+            if (Slotspalte > 54) {
                 break;
             }
         }
-        Slotspalte-=9;
+        Slotspalte -= 9;
         player.sendMessage("geht weiter");
-        if(player.equals(Inventories.Viergewinnt.getPlayer1())){
-            content[Slotspalte]= new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-        }
-        else{
-            content[Slotspalte]= new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        if (player.equals(this.player1)) {
+            content[Slotspalte] = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+        } else {
+            content[Slotspalte] = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         }
         return content;
     }
-    public void renewInventory(Player player1,Player player2,ItemStack [] content,int inventorySize,String gui_name){
-        Inventory inv = Bukkit.createInventory(null, inventorySize,"gui_name");
+
+    public void renewInventory(Player player1, Player player2, ItemStack[] content, int inventorySize, String gui_name) {
+        Inventory inv = Bukkit.createInventory(null, inventorySize, gui_name);
         inv.setContents(content);
         player1.openInventory(inv);
         player2.openInventory(inv);
@@ -195,16 +199,42 @@ public class Viergewinnt {
 
     public ItemStack[] resetInventory() {
         ItemStack[] content = new ItemStack[54];
-        for(int i=0;i<54;i++){
-            content[i]=new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-            if(i%9==0||i%9==8){
-                content[i]=new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        for (int i = 0; i < 54; i++) {
+            content[i] = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+            if (i % 9 == 8) {
+                content[i] = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
             }
+            if (i % 9 == 0) {
+                content[i] = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+            }
+
 
         }
         return content;
     }
 
+    public void setBorderforPlayerWithMove(ItemStack[] content, Player playerwithMove) {
+        if (this.player1.equals(playerwithMove)) {
+            for (int i = 9; i < 54; ) {
+                content[i] = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+                i += 9;
+            }
+            for (int i = 17; i < 54; ) {
+                content[i] = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                i += 9;
+            }
+        } else {
+            for (int i = 17; i < 54; ) {
+                content[i] = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+                i += 9;
+            }
+            for (int i = 9; i < 54; ) {
+                content[i] = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                i += 9;
+            }
+            this.content = content;
+        }
+    }
 }
 // Z X X X X X X X Z // 0 1 2 3 4 5 6 7 8
 // Y X X X X X X X Y // 9 10 11 12 13 14 15 16 17

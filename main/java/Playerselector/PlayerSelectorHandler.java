@@ -41,8 +41,11 @@ public class PlayerSelectorHandler implements Listener {
         ItemStack[] content = new ItemStack[54];
         for(int i=0;i<54;i++){
             content[i]=new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-            if(i%9==0||i%9==8){
+            if(i%9==8){
                 content[i]=new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+            }
+            if(i%9==0){
+                content[i] = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
             }
 
         }

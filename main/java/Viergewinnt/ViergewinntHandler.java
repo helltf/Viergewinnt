@@ -29,6 +29,7 @@ public class ViergewinntHandler implements Listener {
                 Inventories.Viergewinnt.setContent(Inventories.Viergewinnt.setPlayersPoint(Inventories.Viergewinnt.content, clickedPlayer,event.getSlot()));
                 //Inventories.Viergewinnt.checkForWin(Inventories.Viergewinnt.getContent(),Inventories.Viergewinnt.getPlayer1(),Inventories.Viergewinnt.getPlayer2());
                 Inventories.Viergewinnt.setHasMove(Inventories.Viergewinnt.switchPlayerWhoHasMove(Inventories.Viergewinnt.getHasMove(),clickedPlayer,otherplayer));
+                Inventories.Viergewinnt.setBorderforPlayerWithMove(Inventories.Viergewinnt.getContent(),otherplayer);
                 Inventories.Viergewinnt.renewInventory(Inventories.Viergewinnt.getPlayer1(),Inventories.Viergewinnt.getPlayer2(),Inventories.Viergewinnt.getContent(),Inventories.Viergewinnt.getInventorySize(),Inventories.Viergewinnt.getGui_name());
             }
             else{
