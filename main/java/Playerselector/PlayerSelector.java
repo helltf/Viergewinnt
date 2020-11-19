@@ -22,7 +22,6 @@ public class PlayerSelector {
         Inventory inv = Bukkit.createInventory(null,inventorySize,gui_name);
         int x=0;
         Collection<Player> oplayer= (Collection<Player>) Bukkit.getOnlinePlayers();
-        player.sendMessage(String.valueOf(oplayer));
         for (Player availableplayers :oplayer) {
             ItemStack itemstack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) itemstack.getItemMeta();

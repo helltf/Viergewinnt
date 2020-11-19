@@ -1,6 +1,7 @@
 package Viergewinnt;
 
 import challCompass.challComp;
+import de.plugin.extra.Inventories;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,18 +13,7 @@ import java.util.Arrays;
 
 public class test {
     public static void main(String[] args) {
-        ItemStack[] content = createContent();
+        Inventories.Viergewinnt.setHasMove(Inventories.Viergewinnt.initializeHasMove(Inventories.Viergewinnt.getHasMove(),Inventories.Viergewinnt.getPlayer1()));
 
-        for (int x = 0;x<54;x++)
-        if (content[x].equals(content[x + 1])&&content[x].equals(content[x + 2])&&content[x].equals(content[x + 3])&&!content[x].equals(new ItemStack(Material.WHITE_STAINED_GLASS_PANE))) {
-        }
-    }
-    public static ItemStack[] createContent(){
-        ItemStack[] content = new ItemStack[54];
-        for(int i=0;i<54;i++){
-            content[i]=new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-
-        }
-        return content;
     }
 }

@@ -3,10 +3,6 @@ import Playerselector.PlayerSelectorHandler;
 import Viergewinnt.ViergewinntHandler;
 import challCompass.challCompHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
