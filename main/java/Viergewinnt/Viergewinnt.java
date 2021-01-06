@@ -45,7 +45,6 @@ public class Viergewinnt {
     }
 
     public ArrayList<Player> initializeHasMove(ArrayList<Player> hasMove, Player player1) {
-        this.player1.sendMessage(String.valueOf(this.hasMove));
         hasMove.clear();
         hasMove.add(player1);
         return hasMove;
@@ -137,11 +136,12 @@ public class Viergewinnt {
                 col = 0;
                 row++;
             }
+            winner = checkForSameRow(grid,row,col);
+            if (winner == null) winner = checkForSameColoumn(grid,row,col);
+            if (winner == null) winner = checkForDiagonaltoRight(grid,row,col);
+            if (winner == null) winner = checkForDiagonaltoLeft(grid,row,col);
             col++;
-        winner = checkForSameRow(grid,row,col);
-        if (winner == null) winner = checkForSameColoumn(grid,row,col);
-        if (winner == null) winner = checkForDiagonaltoRight(grid,row,col);
-        if (winner == null) winner = checkForDiagonaltoLeft(grid,row,col);
+            if(winner!=null)break;
         }
         if (winner != null) {
             this.getPlayer1().sendMessage("Gewinner ist " + winner.getName());
@@ -219,7 +219,6 @@ public class Viergewinnt {
             win = checkforWinner(oldtest);
         }
         return win;
-
     }
 
     public Player checkForSameRow(int[][] grid, int row, int col) {
@@ -265,7 +264,6 @@ public class Viergewinnt {
                 Slotspalte = Slotspalte + 9;
 
                 if (Slotspalte > 54) {
-                    this.player1.sendMessage("break");
                     break;
                 }
             }
