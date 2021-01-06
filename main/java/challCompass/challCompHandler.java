@@ -18,27 +18,28 @@ public class challCompHandler implements Listener {
         if (!(event.getWhoClicked() instanceof Player)) return;
         if (event.getView().getTitle().equals(Inventories.compass.getGui_name())) {
             event.setCancelled(true);
-            switch (event.getCurrentItem().getType()) {
-                case BLUE_STAINED_GLASS_PANE:
-                    Inventories.ps.openPlayerSelector(player, Inventories.ps.getInventorySize(), Inventories.ps.getGui_name());
-                    break;
-                default:return;
-            }
-        }
 
+            if (event.getCurrentItem() != null) {
+                switch (event.getCurrentItem().getType()) {
+                    case BLUE_STAINED_GLASS_PANE:
+                        Inventories.ps.openPlayerSelector(player, Inventories.ps.getInventorySize(), Inventories.ps.getGui_name());
+                        break;
+
+                }
+            }
+
+        }
     }
 
     @EventHandler
     public void handleNavigatorOpener(PlayerInteractEvent event) {
-        challComp compass = new challComp(54, "Select your Mode");
-        if (event.getItem().getType() != Material.COMPASS) {
-            return;
-        } else {
+        if (!event.getMaterial().equals(Material.COMPASS)){}
+         else {
             if (event.getAction() == Action.RIGHT_CLICK_AIR
                     || event.getAction() == Action.RIGHT_CLICK_BLOCK
                     || event.getAction() == Action.LEFT_CLICK_BLOCK
                     || event.getAction() == Action.LEFT_CLICK_AIR) {
-                compass.openSelectorGUI(event.getPlayer(), compass.getInventorySize(), compass.getGui_name());
+                Inventories.compass.openSelectorGUI(event.getPlayer(), Inventories.compass.getInventorySize(), Inventories.compass.getGui_name());
             }
         }
     }

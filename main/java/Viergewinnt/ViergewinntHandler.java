@@ -1,14 +1,12 @@
 package Viergewinnt;
 
 import de.plugin.extra.Inventories;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
-import javax.naming.InvalidNameException;
+import java.util.Arrays;
 
 public class ViergewinntHandler implements Listener {
 
@@ -27,10 +25,11 @@ public class ViergewinntHandler implements Listener {
                     otherplayer=Inventories.Viergewinnt.getPlayer1();
                 }
                 Inventories.Viergewinnt.setContent(Inventories.Viergewinnt.setPlayersPoint(Inventories.Viergewinnt.content, clickedPlayer,event.getSlot()));
-                //Inventories.Viergewinnt.checkForWin(Inventories.Viergewinnt.getContent(),Inventories.Viergewinnt.getPlayer1(),Inventories.Viergewinnt.getPlayer2());
                 Inventories.Viergewinnt.setHasMove(Inventories.Viergewinnt.switchPlayerWhoHasMove(Inventories.Viergewinnt.getHasMove(),clickedPlayer,otherplayer));
                 Inventories.Viergewinnt.setBorderforPlayerWithMove(Inventories.Viergewinnt.getContent(),otherplayer);
                 Inventories.Viergewinnt.renewInventory(Inventories.Viergewinnt.getPlayer1(),Inventories.Viergewinnt.getPlayer2(),Inventories.Viergewinnt.getContent(),Inventories.Viergewinnt.getInventorySize(),Inventories.Viergewinnt.getGui_name());
+                Inventories.Viergewinnt.checkForWin(Inventories.Viergewinnt.getContent());
+                Inventories.Viergewinnt.getPlayer1().sendMessage(String.valueOf(Inventories.Viergewinnt.getHasMove()));
             }
             else{
                 return;

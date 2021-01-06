@@ -8,18 +8,18 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Viergewinnt {
     public Player player1;
     public Player player2;
     public int inventorySize;
     public String gui_name;
-    public ItemStack[] content;
+    public Material[] content;
     public ArrayList<Player> hasMove;
 
-    public Viergewinnt(int inventorySize, String gui_name, ItemStack[] content, Player player1, Player player2, ArrayList<Player> hasMove) {
+    public Viergewinnt(int inventorySize, String gui_name, Material[] content, Player player1, Player player2, ArrayList<Player> hasMove) {
         this.inventorySize = inventorySize;
         this.gui_name = gui_name;
         this.content = content;
@@ -29,29 +29,33 @@ public class Viergewinnt {
     }
 
     public void openGUI(Player player1, Player player2, Inventory inv) {
+        inv.setItem(0, createPlayerHead(this.player1));
+        inv.setItem(8, createPlayerHead(this.player2));
         player1.openInventory(inv);
         player2.openInventory(inv);
 
     }
 
     public ArrayList<Player> switchPlayerWhoHasMove(ArrayList<Player> hasMove, Player clickedplayer, Player playerwithoutMove) {
-        hasMove.remove(clickedplayer);
-        hasMove.add(playerwithoutMove);
+        if (hasMove.contains(clickedplayer)) {
+            hasMove.remove(clickedplayer);
+            hasMove.add(playerwithoutMove);
+        }
         return hasMove;
     }
 
     public ArrayList<Player> initializeHasMove(ArrayList<Player> hasMove, Player player1) {
-        player1.sendMessage("bin in initialize");
+        this.player1.sendMessage(String.valueOf(this.hasMove));
+        hasMove.clear();
         hasMove.add(player1);
-
         return hasMove;
     }
 
-    public Inventory createInventory(int inventorySize, ItemStack[] content, String gui_name) {
+    public Inventory createInventory(int inventorySize, Material[] content, String gui_name) {
         Inventory inv = Bukkit.createInventory(null, inventorySize, gui_name);
         int i = 0;
-        for (ItemStack m : content) {
-            inv.setItem(i, m);
+        for (Material m : content) {
+            inv.setItem(i, new ItemStack(m));
             i++;
         }
         return inv;
@@ -81,17 +85,21 @@ public class Viergewinnt {
         this.gui_name = gui_name;
     }
 
-    public ItemStack[] getContent() {
+    public Material[] getContent() {
         return content;
     }
 
-    public void setContent(ItemStack[] content) {
+    public void setContent(Material[] content) {
         this.content = content;
     }
 
-    public ItemStack[] editContent(int Slot, ItemStack mat, ItemStack[] content) {
+    public Material[] editContent(int Slot, Material mat, Material[] content) {
         content[Slot] = mat;
         return content;
+    }
+
+    public void editItemMeta(Material[] content, int Slot) {
+
     }
 
     public Player getPlayer1() {
@@ -119,93 +127,182 @@ public class Viergewinnt {
         return itemstack;
     }
 
-    public void checkForWin(ItemStack[] content, Player player1, Player player2) {
+    public void checkForWin(Material[] content) {
         Player winner = null;
-        winner = checkForSameRow(player1, player2, content);
-        winner = checkForSameColoumn(player1, player2, content);
+        int[][] grid =returnControlArray(content);
+        int row=0;
+        int col=0;
+        for(int i=0;i<53;i++) {
+            if (col == 9) {
+                col = 0;
+                row++;
+            }
+            col++;
+        winner = checkForSameRow(grid,row,col);
+        if (winner == null) winner = checkForSameColoumn(grid,row,col);
+        if (winner == null) winner = checkForDiagonaltoRight(grid,row,col);
+        if (winner == null) winner = checkForDiagonaltoLeft(grid,row,col);
+        }
         if (winner != null) {
-            player1.sendMessage("Gewinner ist " + winner.getName());
-            player2.sendMessage("Gewinner ist " + winner.getName());
+            this.getPlayer1().sendMessage("Gewinner ist " + winner.getName());
+            this.getPlayer2().sendMessage("Gewinner ist " + winner.getName());
+            this.getPlayer1().closeInventory();
+            this.getPlayer2().closeInventory();
         }
 
     }
 
-    private Player checkForSameColoumn(Player player1, Player player2, ItemStack[] content) {
-        Player winner = null;
-        for (int x = 0; x < 54; x++) {
-            if (content[x].equals(content[x + 9]) && content[x].equals(content[x + 18]) && content[x].equals(content[x + 27])) {
-                winner = checkforWinner(content[x], player1, player2);
+    private Player checkForDiagonaltoLeft(int[][] grid, int row, int col) {
+        Player win = null;
+        int rowDelta=-1;
+        int colDelta=1;
+        int matches=0;
+        int oldtest=grid[row][col];
+        for (int count = 0; count < 4; count++) {
+            if (row < 6 && row >= 0 && col < 9 && col >= 0) {
+                int test = grid[row][col];
+                if (test==oldtest&&test!=0) {
+                    matches++;
+                    oldtest=test;
+                }
             }
+            row += rowDelta;
+            col += colDelta;
         }
-
-        return winner;
+        if(matches==4){
+            win = checkforWinner(oldtest);
+        }
+        return win;
     }
 
-    public Player checkForSameRow(Player player1, Player player2, ItemStack[] content) {
-        Player winner = null;
-        for (int x = 0; x < 54; x++) {
-            if (content[x].equals(content[x + 1]) && content[x].equals(content[x + 2]) && content[x].equals(content[x + 3])) {
-                winner = checkforWinner(content[x], player1, player2);
+    private Player checkForDiagonaltoRight(int[][] grid, int row, int col) {
+        Player win = null;
+        int rowDelta=1;
+        int colDelta=1;
+        int matches=0;
+        int oldtest=grid[row][col];
+        for (int count = 0; count < 4; count++) {
+            if (row < 6 && row >= 0 && col < 9 && col >= 0) {
+                int test = grid[row][col];
+                if (test==oldtest&&test!=0) {
+                    matches++;
+                    oldtest=test;
+                }
             }
+            row += rowDelta;
+            col += colDelta;
         }
-        return winner;
+        if(matches==4){
+            win = checkforWinner(oldtest);
+        }
+        return win;
     }
 
-    public Player checkforWinner(ItemStack is, Player player1, Player player2) {
-        Player winner = null;
-        if (is.equals(new ItemStack(Material.BLUE_STAINED_GLASS_PANE))) {
-            winner = player1;
-        } else {
-            winner = player2;
-        }
-        return winner;
-    }
-
-    public Player checkForDiagonaltoRight() {
-        Player winner = null;
-        for (int x = 0; x < 54; x++) {
-            if (content[x].equals(content[x + 9]) && content[x].equals(content[x + 18]) && content[x].equals(content[x + 27])) {
-                winner = checkforWinner(content[x], player1, player2);
+    public Player checkForSameColoumn(int[][] grid, int row, int col) {
+        Player win = null;
+        int rowDelta=1;
+        int colDelta=0;
+        int matches=0;
+        int oldtest=grid[row][col];
+        for (int count = 0; count < 4; count++) {
+            if (row < 6 && row >= 0 && col < 9 && col >= 0) {
+                int test = grid[row][col];
+                if (test==oldtest&&test!=0) {
+                    matches++;
+                    oldtest=test;
+                }
             }
+            row += rowDelta;
+            col += colDelta;
+        }
+        if(matches==4){
+            win = checkforWinner(oldtest);
+        }
+        return win;
 
+    }
+
+    public Player checkForSameRow(int[][] grid, int row, int col) {
+            Player win = null;
+            int rowDelta=0;
+            int colDelta=1;
+            int matches=0;
+            int oldtest=grid[row][col];
+            for (int count = 0; count < 4; count++) {
+                if (row < 6 && row >= 0 && col < 9 && col >= 0) {
+                    int test = grid[row][col];
+                    if (test==oldtest&&test!=0) {
+                        matches++;
+                        oldtest=test;
+                    }
+                }
+                row += rowDelta;
+                col += colDelta;
+            }
+            if(matches==4){
+                win = checkforWinner(oldtest);
+            }
+            return win;
+        }
+
+    public Player checkforWinner(int number) {
+        Player winner = null;
+        if (number==1) {
+            winner = this.player1;
+        } else if (number==2) {
+            winner = this.player2;
         }
         return winner;
     }
 
-    public ItemStack[] setPlayersPoint(ItemStack[] content, Player player, int Slot) {
+
+
+
+    public Material[] setPlayersPoint(Material[] content, Player player, int Slot) {
         int Slotspalte = Slot % 9;
-        while (content[Slotspalte].equals(new ItemStack(Material.WHITE_STAINED_GLASS_PANE))) {
-            Slotspalte = Slotspalte + 9;
-            if (Slotspalte > 54) {
-                break;
+        if (0 <= Slot && Slot < 54) {
+            while (content[Slotspalte].equals(Material.WHITE_STAINED_GLASS_PANE)) {
+                Slotspalte = Slotspalte + 9;
+
+                if (Slotspalte > 54) {
+                    this.player1.sendMessage("break");
+                    break;
+                }
             }
+            Slotspalte -= 9;
         }
-        Slotspalte -= 9;
-        player.sendMessage("geht weiter");
+
+
         if (player.equals(this.player1)) {
-            content[Slotspalte] = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+            content[Slotspalte] = Material.BLUE_STAINED_GLASS_PANE;
         } else {
-            content[Slotspalte] = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+            content[Slotspalte] = Material.RED_STAINED_GLASS_PANE;
         }
         return content;
     }
 
-    public void renewInventory(Player player1, Player player2, ItemStack[] content, int inventorySize, String gui_name) {
+    public void renewInventory(Player player1, Player player2, Material[] content, int inventorySize, String gui_name) {
         Inventory inv = Bukkit.createInventory(null, inventorySize, gui_name);
-        inv.setContents(content);
+        ItemStack[] InventoryContent = new ItemStack[inventorySize];
+        for (int x = 0; x < inventorySize; x++) {
+            InventoryContent[x] = new ItemStack(content[x]);
+        }
+        inv.setContents(InventoryContent);
+        inv.setItem(0, createPlayerHead(this.player1));
+        inv.setItem(8, createPlayerHead(this.player2));
         player1.openInventory(inv);
         player2.openInventory(inv);
     }
 
-    public ItemStack[] resetInventory() {
-        ItemStack[] content = new ItemStack[54];
+    public Material[] resetInventory() {
+        Material[] content = new Material[54];
         for (int i = 0; i < 54; i++) {
-            content[i] = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+            content[i] = Material.WHITE_STAINED_GLASS_PANE;
             if (i % 9 == 8) {
-                content[i] = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                content[i] = Material.BLACK_STAINED_GLASS_PANE;
             }
             if (i % 9 == 0) {
-                content[i] = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+                content[i] = Material.GREEN_STAINED_GLASS_PANE;
             }
 
 
@@ -213,32 +310,50 @@ public class Viergewinnt {
         return content;
     }
 
-    public void setBorderforPlayerWithMove(ItemStack[] content, Player playerwithMove) {
+    public void setBorderforPlayerWithMove(Material[] content, Player playerwithMove) {
         if (this.player1.equals(playerwithMove)) {
             for (int i = 9; i < 54; ) {
-                content[i] = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+                content[i] = Material.GREEN_STAINED_GLASS_PANE;
                 i += 9;
             }
             for (int i = 17; i < 54; ) {
-                content[i] = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                content[i] = Material.BLACK_STAINED_GLASS_PANE;
                 i += 9;
             }
         } else {
             for (int i = 17; i < 54; ) {
-                content[i] = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+                content[i] = Material.GREEN_STAINED_GLASS_PANE;
                 i += 9;
             }
             for (int i = 9; i < 54; ) {
-                content[i] = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                content[i] = Material.BLACK_STAINED_GLASS_PANE;
                 i += 9;
             }
             this.content = content;
         }
     }
+    public int[][] returnControlArray(Material[] content){
+        int[][] carray= new int[6][9];
+        int reihe=0;
+        int spalte=0;
+        int counter=0;
+            for(Material m : content){
+                if (m.equals(Material.BLUE_STAINED_GLASS_PANE)) {
+                    carray[reihe][spalte]=1;
+                }
+                else if(m.equals(Material.RED_STAINED_GLASS_PANE)){
+                    carray[reihe][spalte]=2;
+                }
+                else{
+                    carray[reihe][spalte]=0;
+                }
+                spalte++;
+                if(spalte==9){
+                    reihe++;
+                    spalte=0;
+                }
+                if(reihe==6)break;
+            }
+            return carray;
+    }
 }
-// Z X X X X X X X Z // 0 1 2 3 4 5 6 7 8
-// Y X X X X X X X Y // 9 10 11 12 13 14 15 16 17
-// Y X X X X X X X Y // 18 19 20 21 22 23 24 25 26
-// Y X X X X X X X Y // 27 28 29 30 31 32 33 34 35
-// Y X X X X X X X Y // 36 37 38 39 40 41 42 43 44
-// Y X X X X X X X Y//  45 46 47 48 49 50 51 52 53
