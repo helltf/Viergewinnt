@@ -1,15 +1,11 @@
 package Viergewinnt;
-
-import de.plugin.extra.Inventories;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Viergewinnt {
     public Player player1;
@@ -96,11 +92,6 @@ public class Viergewinnt {
         content[Slot] = mat;
         return content;
     }
-
-    public void editItemMeta(Material[] content, int Slot) {
-
-    }
-
     public Player getPlayer1() {
         return player1;
     }
@@ -253,24 +244,17 @@ public class Viergewinnt {
         }
         return winner;
     }
-
-
-
-
     public Material[] setPlayersPoint(Material[] content, Player player, int Slot) {
         int Slotspalte = Slot % 9;
-        if (0 <= Slot && Slot < 54) {
+        if ((0 <= Slot && Slot < 54)&&content[Slot].equals(Material.WHITE_STAINED_GLASS_PANE)) {
             while (content[Slotspalte].equals(Material.WHITE_STAINED_GLASS_PANE)) {
                 Slotspalte = Slotspalte + 9;
-
                 if (Slotspalte > 54) {
                     break;
                 }
             }
             Slotspalte -= 9;
         }
-
-
         if (player.equals(this.player1)) {
             content[Slotspalte] = Material.BLUE_STAINED_GLASS_PANE;
         } else {
@@ -334,7 +318,6 @@ public class Viergewinnt {
         int[][] carray= new int[6][9];
         int reihe=0;
         int spalte=0;
-        int counter=0;
             for(Material m : content){
                 if (m.equals(Material.BLUE_STAINED_GLASS_PANE)) {
                     carray[reihe][spalte]=1;
